@@ -39,6 +39,19 @@ def init_db():
     conn.close()
 
 
+def create_user(name, email, password):
+    conn = get_db()
+    password_hash = generate_password_hash(password)
+    conn.execute(
+        "INSERT INTO users (name, email, password_hash) VALUES (?, ?, ?)",
+        (name, email, password_hash),
+    )
+    conn.commit()
+    user_id = conn.execute("SELECT last_insert_rowid()").fetchone()[0]
+    conn.close()
+    return user_id
+
+
 def seed_db():
     conn = get_db()
 
